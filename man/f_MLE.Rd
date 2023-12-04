@@ -2,7 +2,7 @@
 % Please edit documentation in R/SA23204162R.R
 \name{f_MLE}
 \alias{f_MLE}
-\title{The hw8 Question1}
+\title{MLE and EM compare}
 \usage{
 f_MLE(lamda)
 }

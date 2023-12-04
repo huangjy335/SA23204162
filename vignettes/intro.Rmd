@@ -11,7 +11,7 @@ vignette: >
 
 ## Overview
 
-__SA23204162__ is a two-part R package, the first part is my fall 2023 statistical computing course work, the second part is a number of paper function repetition, the following instructions are also divided into two parts to introduce.
+__SA23204162__ is a two-part R package, the first part is my fall 2023 statistical computing course work, the second part is a number of paper function repetition, the following instructions are the first part.
 
 ## part1
 

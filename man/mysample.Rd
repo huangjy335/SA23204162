@@ -2,7 +2,7 @@
 % Please edit documentation in R/SA23204162R.R
 \name{mysample}
 \alias{mysample}
-\title{The hw1 Question1}
+\title{Reproduce the function Sample}
 \usage{
 mysample(x, size, pro)
 }

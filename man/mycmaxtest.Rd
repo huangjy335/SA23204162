@@ -2,7 +2,7 @@
 % Please edit documentation in R/SA23204162R.R
 \name{mycmaxtest}
 \alias{mycmaxtest}
-\title{The hw6 Question3}
+\title{A permutation test}
 \usage{
 mycmaxtest(x, y, R)
 }

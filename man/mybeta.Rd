@@ -2,7 +2,7 @@
 % Please edit documentation in R/SA23204162R.R
 \name{mybeta}
 \alias{mybeta}
-\title{The hw1 Question3}
+\title{Generate random sample from the beta(a,b) distribution}
 \usage{
 mybeta(n, a, b)
 }

@@ -348,8 +348,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Overview</h2>
 <p><strong>SA23204162</strong> is a two-part R package, the first part
 is my fall 2023 statistical computing course work, the second part is a
-number of paper function repetition, the following instructions are also
-divided into two parts to introduce.</p>
+number of paper function repetition, the following instructions are the
+first part.</p>
 </div>
 <div id="part1" class="section level2">
 <h2>part1</h2>
@@ -865,9 +865,9 @@ with R and Gibbs sampler with Rcpp by microbenchmark.”</p>
 <span id="cb41-5"><a href="#cb41-5" tabindex="-1"></a><span class="at">rnC =</span> <span class="fu">GibbsC</span>(<span class="fl">1e3</span>,<span class="dv">10</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">10</span>)</span>
 <span id="cb41-6"><a href="#cb41-6" tabindex="-1"></a> )</span>
 <span id="cb41-7"><a href="#cb41-7" tabindex="-1"></a> <span class="fu">print</span>(<span class="fu">summary</span>(tm1)[,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">6</span>)])</span></code></pre></div>
-<pre><code>##   expr       lq  median       uq
-## 1  rnR 44.53880 46.2432 48.25335
-## 2  rnC  2.49015  2.5670  2.66065</code></pre>
+<pre><code>##   expr       lq    median        uq
+## 1  rnR 89.59285 92.913452 96.049652
+## 2  rnC  5.23360  5.278802  5.333251</code></pre>
 </div>
 
 

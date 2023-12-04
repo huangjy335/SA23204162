@@ -2,7 +2,7 @@
 % Please edit documentation in R/SA23204162R.R
 \name{Rwalk}
 \alias{Rwalk}
-\title{The hw7 Question2}
+\title{A random walk Metropolis sampler}
 \usage{
 Rwalk(sigma)
 }

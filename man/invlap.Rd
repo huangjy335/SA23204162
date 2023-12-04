@@ -2,7 +2,7 @@
 % Please edit documentation in R/SA23204162R.R
 \name{invlap}
 \alias{invlap}
-\title{The hw1 Question2}
+\title{Generate random sample from the standard Laplace distribution}
 \usage{
 invlap(n)
 }

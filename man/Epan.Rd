@@ -2,7 +2,7 @@
 % Please edit documentation in R/SA23204162R.R
 \name{Epan}
 \alias{Epan}
-\title{The hw1 Question4}
+\title{Generate random sample from the the distribution which pdf is rescaled Epanechnikov kernel}
 \usage{
 Epan(n)
 }

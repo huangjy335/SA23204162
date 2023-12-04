@@ -2,7 +2,7 @@
 % Please edit documentation in R/SA23204162R.R
 \name{gbR}
 \alias{gbR}
-\title{The hw7 Question3}
+\title{A illustration of Gibbs sampler}
 \usage{
 gbR(N, burn)
 }

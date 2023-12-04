@@ -18,6 +18,6 @@
 #' }
 #' @export
 GibbsC <- function(N, thin, a, b, n) {
-    .Call('_SA23204162_GibbsC', N, thin, a, b, n)
+    .Call('_SA23204162_GibbsC', PACKAGE = 'SA23204162', N, thin, a, b, n)
 }
 

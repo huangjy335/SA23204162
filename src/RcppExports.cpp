@@ -25,9 +25,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// inverseMatrix
+NumericMatrix inverseMatrix(NumericMatrix mat);
+RcppExport SEXP _SA23204162_inverseMatrix(SEXP matSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type mat(matSEXP);
+    rcpp_result_gen = Rcpp::wrap(inverseMatrix(mat));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_SA23204162_GibbsC", (DL_FUNC) &_SA23204162_GibbsC, 5},
+    {"_SA23204162_inverseMatrix", (DL_FUNC) &_SA23204162_inverseMatrix, 1},
     {NULL, NULL, 0}
 };
 

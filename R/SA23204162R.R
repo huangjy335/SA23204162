@@ -114,6 +114,9 @@ Epan<-function(n){
 #' @import boot
 #' @import bootstrap
 #' @import DAAG
+#' @import MASS
+#' @import numDeriv
+#' @importFrom stats qchisq
 #' @importFrom stats runif rnorm
 NULL
 
@@ -346,3 +349,296 @@ GibbsR <- function(N,thin,a,b,n){
   }
   mat
 }
+
+gethn<-function(DXi,betan)
+{
+  return(DXi%*%betan)
+}
+sq<-function(epsiloni,Ai)
+{return(solve(sqrt(Ai))%*%epsiloni%*%
+          t(epsiloni)%*%solve(sqrt(Ai)))}
+getGn<-function(DXi,R_bar,Ai)
+{return(t(DXi)%*%sqrt(Ai)%*%solve(R_bar)
+        %*%sqrt(Ai)%*%DXi)}
+getgn<-function(Xi,R_bar,Ai)
+{return(t(Xi)%*%sqrt(Ai)%*%
+          solve(R_bar)%*%sqrt(Ai)%*%Xi)
+}
+#' @title A illustration of ASE estimate
+#' @description ASE is a variable select method
+#' @param UX a list of all covariate samples observe
+#' @param Uy a list of all responses observe
+#' @param noo the size of initial sample size
+#' @return a list contain the estimate of coefficient and sample size used
+#' @examples
+#' \dontrun{
+#' result<-ASER(UX,Uy,40)
+#' }
+#' @export
+ASER<-function(UX,Uy,noo){
+  doo=0.2
+  gama=1
+  dlta=0.55
+  theta=0.75
+  a=0.05
+  DX<-Dy<-list()
+  for (i in 1:noo) {
+    DX[[i]]=UX[[i]]
+    UX[[i]]<-NULL
+    Dy[[i]]=Uy[[i]]
+    Uy[[i]]<-NULL
+  }
+  Ri=diag(dim(DX[[1]])[1])
+  v_n=6
+  an2=1
+  d=doo
+  betan=rep(0,dim(DX[[1]])[2])
+  h_n=lapply(DX,gethn,betan)
+  epsilon_n=h_n
+  f<-function(betan,method.args=list(DX,Dy))
+  { 
+    Sn=0
+    h<-lapply(DX, function(x) x%*%betan)
+    for (i in 1:length(DX)) {
+      Sn=Sn+t(t(DX[[i]])%*%(Dy[[i]]-h[[i]]))
+    }
+    c(Sn)
+  }
+  pk=-solve(jacobian(func=f,x=betan,method.args=list(DX,Dy)))%*%f(betan,method.args=list(DX,Dy))
+  betan=betan+pk
+  p0_hat=length(betan)
+  beta_hat=betan
+  tt=1
+  while(v_n>d^2*tt/an2)
+  {
+    On=diag(length(beta_hat))
+    for(i in 1:p0_hat)
+    {
+      for (j in i:length(beta_hat)) 
+      {
+        On_hat=diag(length(beta_hat))
+        if(abs(beta_hat[j])>0.001&&i!=j&&abs(beta_hat[i])<=0.001)
+        {
+          On_hat[i,i]=0
+          On_hat[i,j]=1
+          On_hat[j,j]=0
+          On_hat[j,i]=1
+          On=On%*%On_hat
+        }
+      }
+    }
+    beta_hat1=On%*%beta_hat
+    detl=-Inf
+    q=1
+    R_bar=0
+    Gn=0
+    gn=0
+    Ai<-diag(dim(DX[[1]])[1])
+    h_n=lapply(DX,gethn,betan)
+    for (i in 1:length(DX)) {
+      epsilon_n[[i]]<-Dy[[i]]-h_n[[i]]
+    }
+    for (i in 1:length(epsilon_n)) {
+      R_bar=R_bar+lapply(epsilon_n,sq,Ai)[[i]]
+    }
+    for (i in 1:length(DX)) {
+      Gn=Gn+lapply(DX,getGn,R_bar,Ai)[[i]][1:p0_hat,1:p0_hat]
+    }
+    gn=lapply(UX,getgn,R_bar,Ai)
+    for (j in 1:length(UX)) {
+      detj=det(Gn+(gn[[j]][1:p0_hat,1:p0_hat]))
+      if(detj>detl){
+        detl=detj
+        q=j
+      }
+    }
+    DX[length(DX)+1]=UX[q]
+    Dy[length(Dy)+1]=Uy[q]
+    UX[q]=NULL
+    Uy[q]=NULL
+    pk=-solve(jacobian(func=f,x=betan,method.args=list(DX,Dy)))%*%f(betan,method.args=list(DX,Dy))
+    betan=betan+pk
+    S=0
+    for(i in 1:length(DX)){
+      S=S+DX[[i]]%*%t(DX[[i]])
+    }
+    ev<-eigen(S)
+    lamedabarn<-max(ev$val)
+    lameda_n<-min(ev$val)
+    Lr=sqrt(lamedabarn*log(lamedabarn))*log(log(lamedabarn))^(0.5+a)/lameda_n
+    lb=Lr^(-1*theta)
+    In=matrix(rep(0,length(betan)*length(betan)),length(betan))
+    #QIC
+    mse<-function(Dy,DX,betan){
+      h<-lapply(DX, function(x) x%*%betan)
+      b<-as.list(1:length(DX))
+      return(sum(unlist
+                 (lapply(b,function(x) t(Uy[[x]]-h[[x]])%*%(Uy[[x]]-h[[x]])))))
+    }
+    epsilon=log(mse(Dy,DX,betan)/length(Dy))+2*p0_hat/length(Dy)
+    for (i in 1:length(betan)) {
+      for (j in 1:length(betan)) {
+        if(sqrt(Lr)*lb*(abs(betan[j])^(-1*gama))<epsilon&&i==j)
+          In[i,j]=1
+      }
+    }
+    p0_hat=sum(In)
+    beta_hat=In%*%betan
+    Hn=0
+    Mn=0
+    for (i in 1:length(DX)) {
+      hi=DX[[i]]%*%beta_hat
+      epsiloni<-Dy[[i]]-hi
+      Hn=Hn+t(DX[[i]])%*%DX[[i]]
+      Mn=Mn+t(DX[[i]])%*%epsiloni%*%t(epsiloni)%*%DX[[i]]
+    }
+    ei<-eigen(tt*In%*%solve(Hn%*%solve(Mn)%*%Hn)%*%In)
+    v_n=max(ei$val)
+    an2<-qchisq(1-a,p0_hat)
+    tt=tt+1
+  }
+  result<-list(beta_hat,tt+noo)
+  return(result)
+}
+
+#' @title A illustration of MQLE estimate
+#' @description MQLE is a coefficient estimate method
+#' @param UX a list of all covariate samples observe
+#' @param Uy a list of all responses observe
+#' @param noo the size of initial sample size
+#' @return a list contain the estimate of coefficient and sample size used
+#' @examples
+#' \dontrun{
+#' result<-MQLE(UX,Uy,40)
+#' }
+#' @export
+MQLE<-function(UX,Uy,noo){
+  doo=0.2
+  tt=1
+  gama=1
+  dlta=0.55
+  theta=0.75
+  a=0.05
+  DX<-Dy<-list()
+  for (i in 1:noo) {
+    DX[[i]]=UX[[i]]
+    UX[[i]]<-NULL
+    Dy[[i]]=Uy[[i]]
+    Uy[[i]]<-NULL
+  }
+  Ri=diag(dim(DX[[1]])[1])
+  q=1
+  v_n=6
+  an2=1
+  d=doo
+  betan=rep(0,dim(DX[[1]])[2])
+  h_n=lapply(DX,gethn,betan)
+  epsilon_n=h_n
+  f<-function(betan,method.args=list(DX,Dy))
+  { 
+    Sn=0
+    h<-lapply(DX, function(x) x%*%betan)
+    for (i in 1:length(DX)) {
+      Sn=Sn+t(t(DX[[i]])%*%(Dy[[i]]-h[[i]]))
+    }
+    c(Sn)
+  }
+  pk=-solve(jacobian(func=f,x=betan,method.args=list(DX,Dy)))%*%f(betan,method.args=list(DX,Dy))
+  betan=betan+pk
+  p0_hat=length(betan)
+  beta_hat=betan
+  while(v_n>d^2*tt/an2)
+  {
+    DX[length(DX)+1]=UX[q]
+    Dy[length(Dy)+1]=Uy[q]
+    UX[q]=NULL
+    Uy[q]=NULL
+    pk=-solve(jacobian(func=f,x=betan,method.args=list(DX,Dy)))%*%f(betan,method.args=list(DX,Dy))
+    betan=betan+pk
+    Hn=0
+    Mn=0
+    for (i in 1:length(DX)) {
+      hi=DX[[i]]%*%beta_hat
+      epsiloni<-Dy[[i]]-hi
+      Hn=Hn+t(DX[[i]])%*%DX[[i]]
+      Mn=Mn+t(DX[[i]])%*%epsiloni%*%t(epsiloni)%*%DX[[i]]
+    }
+    p0_hat=0
+    In=matrix(rep(0,length(betan)*length(betan)),length(betan))
+    for (i in 1:length(betan)) {
+      for (j in 1:length(betan)) {
+        if(abs(betan[j])>0.1&&i==j){
+          In[i,j]=1
+          p0_hat=p0_hat+1
+        }
+      }
+    }
+    ei<-eigen(tt*In%*%solve(Hn%*%solve(Mn)%*%Hn)%*%In)
+    v_n=max(ei$val)
+    an2<-qchisq(1-a,p0_hat)
+    tt=tt+1
+  }
+  result<-list(beta_hat,tt+noo)
+  return(result)
+}
+
+#' @title A illustration dataset
+#' @name data
+#' @description A dataset used to illustrate the performance of ASER and MQLE.
+#' @examples
+#' \dontrun{
+#' n=3000
+#' set.seed(1234)
+#' pd=36
+#' beta0=c(1,-1,1.5,-2,rep(0,pd))
+#' p<-length(beta0)
+#' C=diag(length(beta0))
+#' for (i in 1:length(beta0)) {
+#'  for (j in 1:length(beta0)) {
+#'    if(i==j)
+#'      C[i,j]=0.5
+#'    else
+#'      C[i,j]=0.2
+#'  }
+#'}
+#' n=3000
+#' UX=list()
+#' for(i in 1:n){
+#'  UX[[i]]=mvrnorm(n=5,rep(0,length(beta0)), C)
+#' }
+#' Uy=list()
+#' data(data)
+#' for (i in 1:n) {
+#'  Uy[[i]]<-data[,i]
+#' }
+#' result1<-ASER(UX,Uy,noo=50)
+#' result2<-MQLE(UX,Uy,noo=50)
+#' }
+NULL
+
+#' @title Get a inverse of matrix by R
+#' @description inverse of matrix
+#' @param mat a matrix has inverse
+#' @return the inverse matrix
+#' @examples
+#' \dontrun{
+#' solv(mat)
+#' }
+#' @export
+solv<-function(mat){
+    n <- nrow(mat)
+    identity <- diag(n)
+    for (i in 1:n) {
+      pivot <- mat[i, i]
+      mat[i, ] <- mat[i, ] / pivot
+      identity[i, ] <- identity[i, ] / pivot
+      for (k in 1:n) {
+        if (k != i) {
+          factor <- mat[k, i]
+          mat[k, ] <- mat[k, ] - factor * mat[i, ]
+          identity[k, ] <- identity[k, ] - factor * identity[i, ]
+        }
+      }
+    }
+    return(identity)
+  }

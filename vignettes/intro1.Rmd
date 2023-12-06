@@ -1,10 +1,10 @@
 ---
-title: "Introduction to SA23204162"
+title: "Introduction to SA23204162 part1"
 author: "Jingyu Huang"
 date: "2023-11-27"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to SA23204162}
+  %\VignetteIndexEntry{Introduction to SA23204162 part1}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -441,6 +441,11 @@ set.seed(1234)
 library(SA23204162)
 sigma<-c(0.05,0.5,5,50)
 result<-lapply(sigma,Rwalk)
+index<-5000:7000
+plot(index,result[[1]][[1]][index],type="l",ylab="x")
+plot(index,result[[2]][[1]][index],type="l",col=2,ylab="x")
+plot(index,result[[3]][[1]][index],type="l",col=3,ylab="x")
+plot(index,result[[4]][[1]][index],type="l",col=4,ylab="x")
 result2<-gbR(1e4,1e3)
 ```
 

@@ -21,3 +21,16 @@ GibbsC <- function(N, thin, a, b, n) {
     .Call('_SA23204162_GibbsC', PACKAGE = 'SA23204162', N, thin, a, b, n)
 }
 
+#' @title Get the inverse of a matrix using Rcpp
+#' @description Compute inverse using Rcpp
+#' @param mat A matrix which has inverse
+#' @return the inverse of mat
+#' @examples
+#' \dontrun{
+#' inverseMatrix(mat)
+#' }
+#' @export
+inverseMatrix <- function(mat) {
+    .Call('_SA23204162_inverseMatrix', PACKAGE = 'SA23204162', mat)
+}
+

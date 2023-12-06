@@ -32,3 +32,39 @@ NumericMatrix GibbsC(int N, int thin, int a, int b,int n) {
    }
    return(mat);
 }
+
+//' @title Get the inverse of a matrix using Rcpp
+//' @description Compute inverse using Rcpp
+//' @param mat A matrix which has inverse
+//' @return the inverse of mat
+//' @examples
+//' \dontrun{
+//' inverseMatrix(mat)
+//' }
+//' @export
+// [[Rcpp::export]]
+NumericMatrix inverseMatrix(NumericMatrix mat) {
+   int n = mat.nrow();
+   NumericMatrix identity(n, n);
+   for (int i = 0; i < n; i++) {
+     identity(i, i) = 1;
+   }
+   for (int i = 0; i < n; i++) {
+     double pivot = mat(i, i);
+     for (int j = 0; j < n; j++) {
+       mat(i, j) /= pivot;
+       identity(i, j) /= pivot;
+     }
+     for (int k = 0; k < n; k++) {
+       if (k != i) {
+         double factor = mat(k, i);
+         
+         for (int j = 0; j < n; j++) {
+           mat(k, j) -= factor * mat(i, j);
+           identity(k, j) -= factor * identity(i, j);
+         }
+       }
+     }
+   }
+   return identity;
+ }

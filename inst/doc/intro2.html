@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Jingyu Huang" />
+
+<meta name="date" content="2023-11-27" />
+
+<title>Introduction to SA23204162 part2</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to SA23204162 part2</h1>
+<h4 class="author">Jingyu Huang</h4>
+<h4 class="date">2023-11-27</h4>
+
+
+
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p><strong>SA23204162</strong> is a two-part R package, the first part
+is my fall 2023 statistical computing course work, the second part is a
+number of paper function repetition, the following instructions are the
+second part. In this part,I will show the ASE method firstly, and then,
+as we all know, no matter in math or computing, get the inverse of a
+matrix in a important issue, so I write a cpp to get the inverse of a
+matrix and compare the time of it with get the inverse of a matrix only
+by R.</p>
+</div>
+<div id="part2-first" class="section level2">
+<h2>part2-first</h2>
+</div>
+<div id="introduction" class="section level2">
+<h2>introduction</h2>
+<p>The function ASE is a effective variables select method based
+generalized estimating equation method, it is a sequential estimation
+procedure. Moreover, we can equip our method with an adaptive shrinkage
+property so that it can decide the effective variables during the
+estimation procedure and build a confidence set with a pre-specified
+precision for the corresponding parameters. The algorithm of this
+function is from the article:“Sequential estimation for GEE with
+adaptive variables and subject selection” by Chen et al.</p>
+</div>
+<div id="our-model" class="section level2">
+<h2>our model</h2>
+<p>Let <span class="math inline">\((y_{ij},x_{ij})\)</span> denote a
+pair representing the <span class="math inline">\(j\)</span>th
+measurement on the <span class="math inline">\(i\)</span>th subject,
+<span class="math inline">\(j = 1, . . . , m\)</span> and <span class="math inline">\(i = 1, . . . , n\)</span>, where <span class="math inline">\(y_{ij}\)</span> is a scalar response and <span class="math inline">\(x_{ij}\)</span> is a <span class="math inline">\(p\times 1\)</span> covariate vector. Observations
+from the same subject are assumed to be correlated; otherwise, they are
+independent. Let <span class="math inline">\(y_i=(y_{i1}, . . . ,
+y_{im})^T,i =1, . . . , n\)</span>, be the vector of responses for the
+<span class="math inline">\(i\)</span>th cluster and <span class="math inline">\(X_i=(x_{i1}, . . . , x_{im})^T\)</span> be the
+associated <span class="math inline">\(m\times p\)</span> matrix of
+covariates. Let <span class="math inline">\(E(y_i|X_i,\beta)=X_i\beta\)</span> be the
+conditional expectation of <span class="math inline">\(y_i\)</span>
+given <span class="math inline">\(X_i\)</span> and <span class="math inline">\(beta\)</span>, and <span class="math inline">\(\beta\)</span> is the unknown parameter vector to
+be estimated. Simply, we can estimate <span class="math inline">\(\beta\)</span> by solve the: <span class="math display">\[\sum\limits_{i=1}^nX_i^T(y_i-X_i\beta)=0\]</span></p>
+<p>But if we use the whole samples and don’t detect the effective
+variables, the estimate speed is slow and has low true-0 rate. To detect
+the effective variables, we use the “sequential estimate with adaptive
+shrinkage estimate” proposed by Wang et al. To use less samples, we use
+modified sequential D-criterion( see the article by Chen et al.)</p>
+</div>
+<div id="simulated-data" class="section level2">
+<h2>simulated Data</h2>
+<p>Let <span class="math inline">\(n=2000, m=5, p=30\)</span>, and the
+true parameter <span class="math inline">\(\beta_0=(1,−1.1,1.5,−2,0_k)^T\)</span> with <span class="math inline">\(k=26\)</span>, where <span class="math inline">\(0_k\)</span> denotes the k-dimensional vector of
+0. We generate the covariates vector <span class="math inline">\(x_{ij}\)</span> from a multivariate normal
+distribution with mean 0 and an AR(1) correlation matrix with
+autocorrelation coefficient 0.5 and marginal variance equal to 0.2. We
+then generate the response y i as follows: <span class="math display">\[y_i=X_i^T\beta_0+\epsilon_i,\]</span> where the
+random error vector <span class="math inline">\(\epsilon_i\)</span>
+follows a normal distribution with mean 0 and covariance matrice is the
+identity matrix. The simulation part include: (1)estimate a beta as a
+illustration and compare it to true value, (2)compare the estimate of
+ASE with sequential MQLE(SQMQLE).</p>
+<p>The R code for generating data are like follows:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(MASS)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;MASS&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:DAAG&#39;:
+## 
+##     hills</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#variable dimension is 40</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>pd<span class="ot">=</span><span class="dv">36</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>beta0<span class="ot">=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="fl">1.5</span>,<span class="sc">-</span><span class="dv">2</span>,<span class="fu">rep</span>(<span class="dv">0</span>,pd))</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>C<span class="ot">=</span><span class="fu">diag</span>(<span class="fu">length</span>(beta0))</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(beta0)) {</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(beta0)) {</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    <span class="cf">if</span>(i<span class="sc">==</span>j)</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>        C[i,j]<span class="ot">=</span><span class="fl">0.5</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>        C[i,j]<span class="ot">=</span><span class="fl">0.2</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    }</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>}</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#repeat observe 5 times</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>Xi<span class="ot">=</span><span class="fu">mvrnorm</span>(<span class="dv">5</span>,<span class="fu">rep</span>(<span class="dv">0</span>,<span class="fu">length</span>(beta0)),C)</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>e<span class="ot">=</span><span class="fu">mvrnorm</span>(<span class="dv">5</span>,<span class="fu">c</span>(<span class="dv">0</span>),<span class="fu">diag</span>(<span class="dv">1</span>))</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#sample size is 3000</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>n<span class="ot">=</span><span class="dv">3000</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>UX<span class="ot">=</span><span class="fu">list</span>(Xi)</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>yi<span class="ot">=</span>Xi<span class="sc">%*%</span>beta0<span class="sc">+</span>e</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>Uy<span class="ot">=</span><span class="fu">list</span>(yi)</span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>    Xi<span class="ot">=</span><span class="fu">mvrnorm</span>(<span class="at">n=</span><span class="dv">5</span>,<span class="fu">rep</span>(<span class="dv">0</span>,<span class="fu">length</span>(beta0)), C)</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>    UX[[i]]<span class="ot">=</span>Xi</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>    e<span class="ot">=</span><span class="fu">mvrnorm</span>(<span class="at">n=</span><span class="dv">5</span>,<span class="fu">c</span>(<span class="dv">0</span>),<span class="fu">diag</span>(<span class="dv">1</span>))</span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>    Uy[[i]]<span class="ot">=</span>Xi<span class="sc">%*%</span>beta0<span class="sc">+</span>e</span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>}</span></code></pre></div>
+<p>And the ASER code like follows:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>gethn<span class="ot">&lt;-</span><span class="cf">function</span>(DXi,betan)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>{</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">return</span>(DXi<span class="sc">%*%</span>betan)</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>}</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>sq<span class="ot">&lt;-</span><span class="cf">function</span>(epsiloni,Ai)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>{<span class="fu">return</span>(<span class="fu">solve</span>(<span class="fu">sqrt</span>(Ai))<span class="sc">%*%</span>epsiloni<span class="sc">%*%</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>          <span class="fu">t</span>(epsiloni)<span class="sc">%*%</span><span class="fu">solve</span>(<span class="fu">sqrt</span>(Ai)))}</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>getGn<span class="ot">&lt;-</span><span class="cf">function</span>(DXi,R_bar,Ai)</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>{<span class="fu">return</span>(<span class="fu">t</span>(DXi)<span class="sc">%*%</span><span class="fu">sqrt</span>(Ai)<span class="sc">%*%</span><span class="fu">solve</span>(R_bar)</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>        <span class="sc">%*%</span><span class="fu">sqrt</span>(Ai)<span class="sc">%*%</span>DXi)}</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>getgn<span class="ot">&lt;-</span><span class="cf">function</span>(Xi,R_bar,Ai)</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>{<span class="fu">return</span>(<span class="fu">t</span>(Xi)<span class="sc">%*%</span><span class="fu">sqrt</span>(Ai)<span class="sc">%*%</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>          <span class="fu">solve</span>(R_bar)<span class="sc">%*%</span><span class="fu">sqrt</span>(Ai)<span class="sc">%*%</span>Xi)</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>}</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>ASER<span class="ot">&lt;-</span><span class="cf">function</span>(UX,Uy,noo){</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="co">#doo:the width of confidence interval, which influnce the estimate accuracy</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>  doo<span class="ot">=</span><span class="fl">0.2</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  <span class="co">#the following four parameters are suggested by Chen et al.  </span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  gama<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>  dlta<span class="ot">=</span><span class="fl">0.55</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>  theta<span class="ot">=</span><span class="fl">0.75</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>  a<span class="ot">=</span><span class="fl">0.05</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  DX<span class="ot">&lt;-</span>Dy<span class="ot">&lt;-</span><span class="fu">list</span>()</span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>noo) {</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>    DX[[i]]<span class="ot">=</span>UX[[i]]</span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>    UX[[i]]<span class="ot">&lt;-</span><span class="cn">NULL</span></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a>    Dy[[i]]<span class="ot">=</span>Uy[[i]]</span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a>    Uy[[i]]<span class="ot">&lt;-</span><span class="cn">NULL</span></span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a>  }</span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a>  Ri<span class="ot">=</span><span class="fu">diag</span>(<span class="fu">dim</span>(DX[[<span class="dv">1</span>]])[<span class="dv">1</span>])</span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a>  <span class="co">#the following two parameters can control the shape of the final confidence inteval</span></span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a>    v_n<span class="ot">=</span><span class="dv">6</span></span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a>    an2<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a>    d<span class="ot">=</span>doo</span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a>    betan<span class="ot">=</span><span class="fu">rep</span>(<span class="dv">0</span>,<span class="fu">dim</span>(DX[[<span class="dv">1</span>]])[<span class="dv">2</span>])</span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a>    h_n<span class="ot">=</span><span class="fu">lapply</span>(DX,gethn,betan)</span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a>    epsilon_n<span class="ot">=</span>h_n</span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a>f<span class="ot">&lt;-</span><span class="cf">function</span>(betan,<span class="at">method.args=</span><span class="fu">list</span>(DX,Dy))</span>
+<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a>{ </span>
+<span id="cb5-40"><a href="#cb5-40" tabindex="-1"></a>  Sn<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb5-41"><a href="#cb5-41" tabindex="-1"></a>  h<span class="ot">&lt;-</span><span class="fu">lapply</span>(DX, <span class="cf">function</span>(x) x<span class="sc">%*%</span>betan)</span>
+<span id="cb5-42"><a href="#cb5-42" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(DX)) {</span>
+<span id="cb5-43"><a href="#cb5-43" tabindex="-1"></a>    Sn<span class="ot">=</span>Sn<span class="sc">+</span><span class="fu">t</span>(<span class="fu">t</span>(DX[[i]])<span class="sc">%*%</span>(Dy[[i]]<span class="sc">-</span>h[[i]]))</span>
+<span id="cb5-44"><a href="#cb5-44" tabindex="-1"></a>  }</span>
+<span id="cb5-45"><a href="#cb5-45" tabindex="-1"></a>  <span class="fu">c</span>(Sn)</span>
+<span id="cb5-46"><a href="#cb5-46" tabindex="-1"></a>}</span>
+<span id="cb5-47"><a href="#cb5-47" tabindex="-1"></a>    pk<span class="ot">=</span><span class="sc">-</span><span class="fu">solve</span>(<span class="fu">jacobian</span>(<span class="at">func=</span>f,<span class="at">x=</span>betan,<span class="at">method.args=</span><span class="fu">list</span>(DX,Dy)))<span class="sc">%*%</span><span class="fu">f</span>(betan,<span class="at">method.args=</span><span class="fu">list</span>(DX,Dy))</span>
+<span id="cb5-48"><a href="#cb5-48" tabindex="-1"></a>    betan<span class="ot">=</span>betan<span class="sc">+</span>pk</span>
+<span id="cb5-49"><a href="#cb5-49" tabindex="-1"></a>    p0_hat<span class="ot">=</span><span class="fu">length</span>(betan)</span>
+<span id="cb5-50"><a href="#cb5-50" tabindex="-1"></a>    beta_hat<span class="ot">=</span>betan</span>
+<span id="cb5-51"><a href="#cb5-51" tabindex="-1"></a>    tt<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb5-52"><a href="#cb5-52" tabindex="-1"></a>    <span class="cf">while</span>(v_n<span class="sc">&gt;</span>d<span class="sc">^</span><span class="dv">2</span><span class="sc">*</span>tt<span class="sc">/</span>an2)</span>
+<span id="cb5-53"><a href="#cb5-53" tabindex="-1"></a>    {</span>
+<span id="cb5-54"><a href="#cb5-54" tabindex="-1"></a>      On<span class="ot">=</span><span class="fu">diag</span>(<span class="fu">length</span>(beta_hat))</span>
+<span id="cb5-55"><a href="#cb5-55" tabindex="-1"></a>      <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>p0_hat)</span>
+<span id="cb5-56"><a href="#cb5-56" tabindex="-1"></a>      {</span>
+<span id="cb5-57"><a href="#cb5-57" tabindex="-1"></a>        <span class="cf">for</span> (j <span class="cf">in</span> i<span class="sc">:</span><span class="fu">length</span>(beta_hat)) </span>
+<span id="cb5-58"><a href="#cb5-58" tabindex="-1"></a>      {</span>
+<span id="cb5-59"><a href="#cb5-59" tabindex="-1"></a>          On_hat<span class="ot">=</span><span class="fu">diag</span>(<span class="fu">length</span>(beta_hat))</span>
+<span id="cb5-60"><a href="#cb5-60" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">abs</span>(beta_hat[j])<span class="sc">&gt;</span><span class="fl">0.001</span><span class="sc">&amp;&amp;</span>i<span class="sc">!=</span>j<span class="sc">&amp;&amp;</span><span class="fu">abs</span>(beta_hat[i])<span class="sc">&lt;=</span><span class="fl">0.001</span>)</span>
+<span id="cb5-61"><a href="#cb5-61" tabindex="-1"></a>        {</span>
+<span id="cb5-62"><a href="#cb5-62" tabindex="-1"></a>        On_hat[i,i]<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb5-63"><a href="#cb5-63" tabindex="-1"></a>        On_hat[i,j]<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb5-64"><a href="#cb5-64" tabindex="-1"></a>        On_hat[j,j]<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb5-65"><a href="#cb5-65" tabindex="-1"></a>        On_hat[j,i]<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb5-66"><a href="#cb5-66" tabindex="-1"></a>        On<span class="ot">=</span>On<span class="sc">%*%</span>On_hat</span>
+<span id="cb5-67"><a href="#cb5-67" tabindex="-1"></a>      }</span>
+<span id="cb5-68"><a href="#cb5-68" tabindex="-1"></a>      }</span>
+<span id="cb5-69"><a href="#cb5-69" tabindex="-1"></a>      }</span>
+<span id="cb5-70"><a href="#cb5-70" tabindex="-1"></a>      beta_hat1<span class="ot">=</span>On<span class="sc">%*%</span>beta_hat</span>
+<span id="cb5-71"><a href="#cb5-71" tabindex="-1"></a>      <span class="co">#variable select</span></span>
+<span id="cb5-72"><a href="#cb5-72" tabindex="-1"></a>      detl<span class="ot">=</span><span class="sc">-</span><span class="cn">Inf</span></span>
+<span id="cb5-73"><a href="#cb5-73" tabindex="-1"></a>      q<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb5-74"><a href="#cb5-74" tabindex="-1"></a>      R_bar<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb5-75"><a href="#cb5-75" tabindex="-1"></a>      Gn<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb5-76"><a href="#cb5-76" tabindex="-1"></a>      gn<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb5-77"><a href="#cb5-77" tabindex="-1"></a>      Ai<span class="ot">&lt;-</span><span class="fu">diag</span>(<span class="fu">dim</span>(DX[[<span class="dv">1</span>]])[<span class="dv">1</span>])</span>
+<span id="cb5-78"><a href="#cb5-78" tabindex="-1"></a>      h_n<span class="ot">=</span><span class="fu">lapply</span>(DX,gethn,betan)</span>
+<span id="cb5-79"><a href="#cb5-79" tabindex="-1"></a>      <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(DX)) {</span>
+<span id="cb5-80"><a href="#cb5-80" tabindex="-1"></a>        epsilon_n[[i]]<span class="ot">&lt;-</span>Dy[[i]]<span class="sc">-</span>h_n[[i]]</span>
+<span id="cb5-81"><a href="#cb5-81" tabindex="-1"></a>      }</span>
+<span id="cb5-82"><a href="#cb5-82" tabindex="-1"></a>      <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(epsilon_n)) {</span>
+<span id="cb5-83"><a href="#cb5-83" tabindex="-1"></a>        R_bar<span class="ot">=</span>R_bar<span class="sc">+</span><span class="fu">lapply</span>(epsilon_n,sq,Ai)[[i]]</span>
+<span id="cb5-84"><a href="#cb5-84" tabindex="-1"></a>      }</span>
+<span id="cb5-85"><a href="#cb5-85" tabindex="-1"></a>      <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(DX)) {</span>
+<span id="cb5-86"><a href="#cb5-86" tabindex="-1"></a>        Gn<span class="ot">=</span>Gn<span class="sc">+</span><span class="fu">lapply</span>(DX,getGn,R_bar,Ai)[[i]][<span class="dv">1</span><span class="sc">:</span>p0_hat,<span class="dv">1</span><span class="sc">:</span>p0_hat]</span>
+<span id="cb5-87"><a href="#cb5-87" tabindex="-1"></a>      }</span>
+<span id="cb5-88"><a href="#cb5-88" tabindex="-1"></a>      gn<span class="ot">=</span><span class="fu">lapply</span>(UX,getgn,R_bar,Ai)</span>
+<span id="cb5-89"><a href="#cb5-89" tabindex="-1"></a>      <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(UX)) {</span>
+<span id="cb5-90"><a href="#cb5-90" tabindex="-1"></a>        detj<span class="ot">=</span><span class="fu">det</span>(Gn<span class="sc">+</span>(gn[[j]][<span class="dv">1</span><span class="sc">:</span>p0_hat,<span class="dv">1</span><span class="sc">:</span>p0_hat]))</span>
+<span id="cb5-91"><a href="#cb5-91" tabindex="-1"></a>        <span class="cf">if</span>(detj<span class="sc">&gt;</span>detl){</span>
+<span id="cb5-92"><a href="#cb5-92" tabindex="-1"></a>          detl<span class="ot">=</span>detj</span>
+<span id="cb5-93"><a href="#cb5-93" tabindex="-1"></a>          q<span class="ot">=</span>j</span>
+<span id="cb5-94"><a href="#cb5-94" tabindex="-1"></a>        }</span>
+<span id="cb5-95"><a href="#cb5-95" tabindex="-1"></a>      }</span>
+<span id="cb5-96"><a href="#cb5-96" tabindex="-1"></a>      DX[<span class="fu">length</span>(DX)<span class="sc">+</span><span class="dv">1</span>]<span class="ot">=</span>UX[q]</span>
+<span id="cb5-97"><a href="#cb5-97" tabindex="-1"></a>      Dy[<span class="fu">length</span>(Dy)<span class="sc">+</span><span class="dv">1</span>]<span class="ot">=</span>Uy[q]</span>
+<span id="cb5-98"><a href="#cb5-98" tabindex="-1"></a>      UX[q]<span class="ot">=</span><span class="cn">NULL</span></span>
+<span id="cb5-99"><a href="#cb5-99" tabindex="-1"></a>      Uy[q]<span class="ot">=</span><span class="cn">NULL</span></span>
+<span id="cb5-100"><a href="#cb5-100" tabindex="-1"></a>      <span class="co">#compute betan</span></span>
+<span id="cb5-101"><a href="#cb5-101" tabindex="-1"></a>      pk<span class="ot">=</span><span class="sc">-</span><span class="fu">solve</span>(<span class="fu">jacobian</span>(<span class="at">func=</span>f,<span class="at">x=</span>betan,<span class="at">method.args=</span><span class="fu">list</span>(DX,Dy)))<span class="sc">%*%</span><span class="fu">f</span>(betan,<span class="at">method.args=</span><span class="fu">list</span>(DX,Dy))</span>
+<span id="cb5-102"><a href="#cb5-102" tabindex="-1"></a>      betan<span class="ot">=</span>betan<span class="sc">+</span>pk</span>
+<span id="cb5-103"><a href="#cb5-103" tabindex="-1"></a>      <span class="co">#compute beta_hat  </span></span>
+<span id="cb5-104"><a href="#cb5-104" tabindex="-1"></a>      S<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb5-105"><a href="#cb5-105" tabindex="-1"></a>      <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(DX)){</span>
+<span id="cb5-106"><a href="#cb5-106" tabindex="-1"></a>        S<span class="ot">=</span>S<span class="sc">+</span>DX[[i]]<span class="sc">%*%</span><span class="fu">t</span>(DX[[i]])</span>
+<span id="cb5-107"><a href="#cb5-107" tabindex="-1"></a>      }</span>
+<span id="cb5-108"><a href="#cb5-108" tabindex="-1"></a>      ev<span class="ot">&lt;-</span><span class="fu">eigen</span>(S)</span>
+<span id="cb5-109"><a href="#cb5-109" tabindex="-1"></a>      lamedabarn<span class="ot">&lt;-</span><span class="fu">max</span>(ev<span class="sc">$</span>val)</span>
+<span id="cb5-110"><a href="#cb5-110" tabindex="-1"></a>      lameda_n<span class="ot">&lt;-</span><span class="fu">min</span>(ev<span class="sc">$</span>val)</span>
+<span id="cb5-111"><a href="#cb5-111" tabindex="-1"></a>      Lr<span class="ot">=</span><span class="fu">sqrt</span>(lamedabarn<span class="sc">*</span><span class="fu">log</span>(lamedabarn))<span class="sc">*</span><span class="fu">log</span>(<span class="fu">log</span>(lamedabarn))<span class="sc">^</span>(<span class="fl">0.5</span><span class="sc">+</span>a)<span class="sc">/</span>lameda_n</span>
+<span id="cb5-112"><a href="#cb5-112" tabindex="-1"></a>      lb<span class="ot">=</span>Lr<span class="sc">^</span>(<span class="sc">-</span><span class="dv">1</span><span class="sc">*</span>theta)</span>
+<span id="cb5-113"><a href="#cb5-113" tabindex="-1"></a>      In<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">0</span>,<span class="fu">length</span>(betan)<span class="sc">*</span><span class="fu">length</span>(betan)),<span class="fu">length</span>(betan))</span>
+<span id="cb5-114"><a href="#cb5-114" tabindex="-1"></a>      <span class="co">#QIC</span></span>
+<span id="cb5-115"><a href="#cb5-115" tabindex="-1"></a>      mse<span class="ot">&lt;-</span><span class="cf">function</span>(Dy,DX,betan){</span>
+<span id="cb5-116"><a href="#cb5-116" tabindex="-1"></a>        h<span class="ot">&lt;-</span><span class="fu">lapply</span>(DX, <span class="cf">function</span>(x) x<span class="sc">%*%</span>betan)</span>
+<span id="cb5-117"><a href="#cb5-117" tabindex="-1"></a>        b<span class="ot">&lt;-</span><span class="fu">as.list</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(DX))</span>
+<span id="cb5-118"><a href="#cb5-118" tabindex="-1"></a>        <span class="fu">return</span>(<span class="fu">sum</span>(unlist</span>
+<span id="cb5-119"><a href="#cb5-119" tabindex="-1"></a>                   (<span class="fu">lapply</span>(b,<span class="cf">function</span>(x) <span class="fu">t</span>(Uy[[x]]<span class="sc">-</span>h[[x]])<span class="sc">%*%</span>(Uy[[x]]<span class="sc">-</span>h[[x]])))))</span>
+<span id="cb5-120"><a href="#cb5-120" tabindex="-1"></a>      }</span>
+<span id="cb5-121"><a href="#cb5-121" tabindex="-1"></a>      epsilon<span class="ot">=</span><span class="fu">log</span>(<span class="fu">mse</span>(Dy,DX,betan)<span class="sc">/</span><span class="fu">length</span>(Dy))<span class="sc">+</span><span class="dv">2</span><span class="sc">*</span>p0_hat<span class="sc">/</span><span class="fu">length</span>(Dy)</span>
+<span id="cb5-122"><a href="#cb5-122" tabindex="-1"></a>      <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(betan)) {</span>
+<span id="cb5-123"><a href="#cb5-123" tabindex="-1"></a>        <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(betan)) {</span>
+<span id="cb5-124"><a href="#cb5-124" tabindex="-1"></a>          <span class="cf">if</span>(<span class="fu">sqrt</span>(Lr)<span class="sc">*</span>lb<span class="sc">*</span>(<span class="fu">abs</span>(betan[j])<span class="sc">^</span>(<span class="sc">-</span><span class="dv">1</span><span class="sc">*</span>gama))<span class="sc">&lt;</span>epsilon<span class="sc">&amp;&amp;</span>i<span class="sc">==</span>j)</span>
+<span id="cb5-125"><a href="#cb5-125" tabindex="-1"></a>            In[i,j]<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb5-126"><a href="#cb5-126" tabindex="-1"></a>        }</span>
+<span id="cb5-127"><a href="#cb5-127" tabindex="-1"></a>      }</span>
+<span id="cb5-128"><a href="#cb5-128" tabindex="-1"></a>      p0_hat<span class="ot">=</span><span class="fu">sum</span>(In)</span>
+<span id="cb5-129"><a href="#cb5-129" tabindex="-1"></a>      beta_hat<span class="ot">=</span>In<span class="sc">%*%</span>betan</span>
+<span id="cb5-130"><a href="#cb5-130" tabindex="-1"></a>      <span class="co">#compute v_n</span></span>
+<span id="cb5-131"><a href="#cb5-131" tabindex="-1"></a>      Hn<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb5-132"><a href="#cb5-132" tabindex="-1"></a>      Mn<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb5-133"><a href="#cb5-133" tabindex="-1"></a>      <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(DX)) {</span>
+<span id="cb5-134"><a href="#cb5-134" tabindex="-1"></a>        hi<span class="ot">=</span>DX[[i]]<span class="sc">%*%</span>beta_hat</span>
+<span id="cb5-135"><a href="#cb5-135" tabindex="-1"></a>        epsiloni<span class="ot">&lt;-</span>Dy[[i]]<span class="sc">-</span>hi</span>
+<span id="cb5-136"><a href="#cb5-136" tabindex="-1"></a>        Hn<span class="ot">=</span>Hn<span class="sc">+</span><span class="fu">t</span>(DX[[i]])<span class="sc">%*%</span>DX[[i]]</span>
+<span id="cb5-137"><a href="#cb5-137" tabindex="-1"></a>        Mn<span class="ot">=</span>Mn<span class="sc">+</span><span class="fu">t</span>(DX[[i]])<span class="sc">%*%</span>epsiloni<span class="sc">%*%</span><span class="fu">t</span>(epsiloni)<span class="sc">%*%</span>DX[[i]]</span>
+<span id="cb5-138"><a href="#cb5-138" tabindex="-1"></a>      }</span>
+<span id="cb5-139"><a href="#cb5-139" tabindex="-1"></a>      ei<span class="ot">&lt;-</span><span class="fu">eigen</span>(tt<span class="sc">*</span>In<span class="sc">%*%</span><span class="fu">solve</span>(Hn<span class="sc">%*%</span><span class="fu">solve</span>(Mn)<span class="sc">%*%</span>Hn)<span class="sc">%*%</span>In)</span>
+<span id="cb5-140"><a href="#cb5-140" tabindex="-1"></a>      v_n<span class="ot">=</span><span class="fu">max</span>(ei<span class="sc">$</span>val)</span>
+<span id="cb5-141"><a href="#cb5-141" tabindex="-1"></a>      <span class="co">#compute Chi square quantile:an</span></span>
+<span id="cb5-142"><a href="#cb5-142" tabindex="-1"></a>      <span class="co">#freedom:p0_hat，confidence level:1-a</span></span>
+<span id="cb5-143"><a href="#cb5-143" tabindex="-1"></a>      an2<span class="ot">&lt;-</span><span class="fu">qchisq</span>(<span class="dv">1</span><span class="sc">-</span>a,p0_hat)</span>
+<span id="cb5-144"><a href="#cb5-144" tabindex="-1"></a>      tt<span class="ot">=</span>tt<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb5-145"><a href="#cb5-145" tabindex="-1"></a>    }</span>
+<span id="cb5-146"><a href="#cb5-146" tabindex="-1"></a>result<span class="ot">&lt;-</span><span class="fu">list</span>(beta_hat,tt<span class="sc">+</span>noo)</span>
+<span id="cb5-147"><a href="#cb5-147" tabindex="-1"></a><span class="fu">return</span>(result)</span>
+<span id="cb5-148"><a href="#cb5-148" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="part1" class="section level2">
+<h2>part(1)</h2>
+<p>We estimate <span class="math inline">\(\beta\)</span> by:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">library</span>(numDeriv)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">library</span>(SA23204162)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>result1<span class="ot">&lt;-</span><span class="fu">ASER</span>(UX,Uy,<span class="dv">50</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="st">&quot;beta_estimate&quot;</span><span class="ot">=</span>result1[[<span class="dv">1</span>]],<span class="st">&quot;beta_true&quot;</span><span class="ot">=</span>beta0))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">beta_estimate</th>
+<th align="right">beta_true</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1.034205</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="even">
+<td align="right">-1.076135</td>
+<td align="right">-1.0</td>
+</tr>
+<tr class="odd">
+<td align="right">1.612912</td>
+<td align="right">1.5</td>
+</tr>
+<tr class="even">
+<td align="right">-1.956586</td>
+<td align="right">-2.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.000000</td>
+<td align="right">0.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="part2" class="section level2">
+<h2>part(2)</h2>
+<p>The SQMQLE code like follows:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>MQLE<span class="ot">&lt;-</span><span class="cf">function</span>(UX,Uy,noo){</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="co">#doo:the width of confidence interval, which influnce the estimate accuracy</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  doo<span class="ot">=</span><span class="fl">0.2</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  tt<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="co">#the following four parameters are suggested by Chen et al.  </span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  gama<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  dlta<span class="ot">=</span><span class="fl">0.55</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  theta<span class="ot">=</span><span class="fl">0.75</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  a<span class="ot">=</span><span class="fl">0.05</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  DX<span class="ot">&lt;-</span>Dy<span class="ot">&lt;-</span><span class="fu">list</span>()</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>noo) {</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>    DX[[i]]<span class="ot">=</span>UX[[i]]</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>    UX[[i]]<span class="ot">&lt;-</span><span class="cn">NULL</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>    Dy[[i]]<span class="ot">=</span>Uy[[i]]</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>    Uy[[i]]<span class="ot">&lt;-</span><span class="cn">NULL</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  }</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  Ri<span class="ot">=</span><span class="fu">diag</span>(<span class="fu">dim</span>(DX[[<span class="dv">1</span>]])[<span class="dv">1</span>])</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  <span class="co">#the following two parameters can control the shape of the final confidence inteval</span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>    q<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>    v_n<span class="ot">=</span><span class="dv">6</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>    an2<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>    d<span class="ot">=</span>doo</span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>    betan<span class="ot">=</span><span class="fu">rep</span>(<span class="dv">0</span>,<span class="fu">dim</span>(DX[[<span class="dv">1</span>]])[<span class="dv">2</span>])</span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>    h_n<span class="ot">=</span><span class="fu">lapply</span>(DX,gethn,betan)</span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>    epsilon_n<span class="ot">=</span>h_n</span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a>f<span class="ot">&lt;-</span><span class="cf">function</span>(betan,<span class="at">method.args=</span><span class="fu">list</span>(DX,Dy))</span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a>{ </span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a>  Sn<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a>  h<span class="ot">&lt;-</span><span class="fu">lapply</span>(DX, <span class="cf">function</span>(x) x<span class="sc">%*%</span>betan)</span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(DX)) {</span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a>    Sn<span class="ot">=</span>Sn<span class="sc">+</span><span class="fu">t</span>(<span class="fu">t</span>(DX[[i]])<span class="sc">%*%</span>(Dy[[i]]<span class="sc">-</span>h[[i]]))</span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a>  }</span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a>  <span class="fu">c</span>(Sn)</span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a>}</span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a>    pk<span class="ot">=</span><span class="sc">-</span><span class="fu">solve</span>(<span class="fu">jacobian</span>(<span class="at">func=</span>f,<span class="at">x=</span>betan,<span class="at">method.args=</span><span class="fu">list</span>(DX,Dy)))<span class="sc">%*%</span><span class="fu">f</span>(betan,<span class="at">method.args=</span><span class="fu">list</span>(DX,Dy))</span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a>    betan<span class="ot">=</span>betan<span class="sc">+</span>pk</span>
+<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a>    p0_hat<span class="ot">=</span><span class="fu">length</span>(betan)</span>
+<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a>    beta_hat<span class="ot">=</span>betan</span>
+<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a>    <span class="cf">while</span>(v_n<span class="sc">&gt;</span>d<span class="sc">^</span><span class="dv">2</span><span class="sc">*</span>tt<span class="sc">/</span>an2)</span>
+<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a>    {</span>
+<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a>      DX[<span class="fu">length</span>(DX)<span class="sc">+</span><span class="dv">1</span>]<span class="ot">=</span>UX[q]</span>
+<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a>      Dy[<span class="fu">length</span>(Dy)<span class="sc">+</span><span class="dv">1</span>]<span class="ot">=</span>Uy[q]</span>
+<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a>      UX[q]<span class="ot">=</span><span class="cn">NULL</span></span>
+<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a>      Uy[q]<span class="ot">=</span><span class="cn">NULL</span></span>
+<span id="cb7-45"><a href="#cb7-45" tabindex="-1"></a>      <span class="co">#compute betan</span></span>
+<span id="cb7-46"><a href="#cb7-46" tabindex="-1"></a>      pk<span class="ot">=</span><span class="sc">-</span><span class="fu">solve</span>(<span class="fu">jacobian</span>(<span class="at">func=</span>f,<span class="at">x=</span>betan,<span class="at">method.args=</span><span class="fu">list</span>(DX,Dy)))<span class="sc">%*%</span><span class="fu">f</span>(betan,<span class="at">method.args=</span><span class="fu">list</span>(DX,Dy))</span>
+<span id="cb7-47"><a href="#cb7-47" tabindex="-1"></a>      betan<span class="ot">=</span>betan<span class="sc">+</span>pk</span>
+<span id="cb7-48"><a href="#cb7-48" tabindex="-1"></a>      Hn<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb7-49"><a href="#cb7-49" tabindex="-1"></a>      Mn<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb7-50"><a href="#cb7-50" tabindex="-1"></a>      <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(DX)) {</span>
+<span id="cb7-51"><a href="#cb7-51" tabindex="-1"></a>        hi<span class="ot">=</span>DX[[i]]<span class="sc">%*%</span>beta_hat</span>
+<span id="cb7-52"><a href="#cb7-52" tabindex="-1"></a>        epsiloni<span class="ot">&lt;-</span>Dy[[i]]<span class="sc">-</span>hi</span>
+<span id="cb7-53"><a href="#cb7-53" tabindex="-1"></a>        Hn<span class="ot">=</span>Hn<span class="sc">+</span><span class="fu">t</span>(DX[[i]])<span class="sc">%*%</span>DX[[i]]</span>
+<span id="cb7-54"><a href="#cb7-54" tabindex="-1"></a>        Mn<span class="ot">=</span>Mn<span class="sc">+</span><span class="fu">t</span>(DX[[i]])<span class="sc">%*%</span>epsiloni<span class="sc">%*%</span><span class="fu">t</span>(epsiloni)<span class="sc">%*%</span>DX[[i]]</span>
+<span id="cb7-55"><a href="#cb7-55" tabindex="-1"></a>      }</span>
+<span id="cb7-56"><a href="#cb7-56" tabindex="-1"></a>      p0_hat<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb7-57"><a href="#cb7-57" tabindex="-1"></a>      In<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">0</span>,<span class="fu">length</span>(betan)<span class="sc">*</span><span class="fu">length</span>(betan)),<span class="fu">length</span>(betan))</span>
+<span id="cb7-58"><a href="#cb7-58" tabindex="-1"></a>      <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(betan)) {</span>
+<span id="cb7-59"><a href="#cb7-59" tabindex="-1"></a>        <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(betan)) {</span>
+<span id="cb7-60"><a href="#cb7-60" tabindex="-1"></a>          <span class="cf">if</span>(<span class="fu">abs</span>(betan[j])<span class="sc">&gt;</span><span class="fl">0.1</span><span class="sc">&amp;&amp;</span>i<span class="sc">==</span>j){</span>
+<span id="cb7-61"><a href="#cb7-61" tabindex="-1"></a>            In[i,j]<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb7-62"><a href="#cb7-62" tabindex="-1"></a>            p0_hat<span class="ot">=</span>p0_hat<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb7-63"><a href="#cb7-63" tabindex="-1"></a>          }</span>
+<span id="cb7-64"><a href="#cb7-64" tabindex="-1"></a>        }</span>
+<span id="cb7-65"><a href="#cb7-65" tabindex="-1"></a>      }</span>
+<span id="cb7-66"><a href="#cb7-66" tabindex="-1"></a>      ei<span class="ot">&lt;-</span><span class="fu">eigen</span>(tt<span class="sc">*</span>In<span class="sc">%*%</span><span class="fu">solve</span>(Hn<span class="sc">%*%</span><span class="fu">solve</span>(Mn)<span class="sc">%*%</span>Hn)<span class="sc">%*%</span>In)</span>
+<span id="cb7-67"><a href="#cb7-67" tabindex="-1"></a>      v_n<span class="ot">=</span><span class="fu">max</span>(ei<span class="sc">$</span>val)</span>
+<span id="cb7-68"><a href="#cb7-68" tabindex="-1"></a>      <span class="co">#compute Chi square quantile:an</span></span>
+<span id="cb7-69"><a href="#cb7-69" tabindex="-1"></a>      <span class="co">#freedom:p0_hat，confidence level:1-a</span></span>
+<span id="cb7-70"><a href="#cb7-70" tabindex="-1"></a>      an2<span class="ot">&lt;-</span><span class="fu">qchisq</span>(<span class="dv">1</span><span class="sc">-</span>a,p0_hat)</span>
+<span id="cb7-71"><a href="#cb7-71" tabindex="-1"></a>      tt<span class="ot">=</span>tt<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb7-72"><a href="#cb7-72" tabindex="-1"></a>    }</span>
+<span id="cb7-73"><a href="#cb7-73" tabindex="-1"></a>result<span class="ot">&lt;-</span><span class="fu">list</span>(beta_hat,tt<span class="sc">+</span>noo)</span>
+<span id="cb7-74"><a href="#cb7-74" tabindex="-1"></a><span class="fu">return</span>(result)</span>
+<span id="cb7-75"><a href="#cb7-75" tabindex="-1"></a>}</span></code></pre></div>
+<p>The compare of estimate <span class="math inline">\(\beta\)</span> by
+SQMQLE and ASER:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>result1<span class="ot">&lt;-</span><span class="fu">ASER</span>(UX,Uy,<span class="at">noo=</span><span class="dv">50</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>result2<span class="ot">&lt;-</span><span class="fu">MQLE</span>(UX,Uy,<span class="at">noo=</span><span class="dv">50</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="st">&quot;MQLE_beta&quot;</span><span class="ot">=</span><span class="fu">round</span>(result2[[<span class="dv">1</span>]],<span class="dv">3</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>           <span class="st">&quot;ASE_beta&quot;</span><span class="ot">=</span><span class="fu">round</span>(result1[[<span class="dv">1</span>]],<span class="dv">3</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>           <span class="st">&quot;true_beta&quot;</span><span class="ot">=</span>beta0))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">MQLE_beta</th>
+<th align="right">ASE_beta</th>
+<th align="right">true_beta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.888</td>
+<td align="right">1.034</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="even">
+<td align="right">-1.036</td>
+<td align="right">-1.076</td>
+<td align="right">-1.0</td>
+</tr>
+<tr class="odd">
+<td align="right">1.746</td>
+<td align="right">1.613</td>
+<td align="right">1.5</td>
+</tr>
+<tr class="even">
+<td align="right">-2.081</td>
+<td align="right">-1.957</td>
+<td align="right">-2.0</td>
+</tr>
+<tr class="odd">
+<td align="right">-0.020</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">-0.091</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.129</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.005</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.014</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.079</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.009</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">-0.155</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.003</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.135</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.053</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">-0.076</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.048</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.026</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.035</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">-0.087</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">-0.169</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.098</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.189</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">-0.140</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.017</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.149</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.095</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">-0.112</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">-0.155</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.032</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.026</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">-0.062</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">-0.092</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">-0.212</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">-0.031</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">-0.149</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">-0.068</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.007</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="right">0.237</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">0.030</td>
+<td align="right">0.000</td>
+<td align="right">0.0</td>
+</tr>
+</tbody>
+</table>
+<p>We can find that the ASE 0-value true detect rate is better than
+SQMQLE, which results that the estimate of effective variable is better
+than MQLE. Additionally, ASE use less sample:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="st">&quot;MQLE_samplesize&quot;</span><span class="ot">=</span><span class="fu">round</span>(result2[[<span class="dv">2</span>]],<span class="dv">0</span>),</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>           <span class="st">&quot;ASE_samplesize&quot;</span><span class="ot">=</span><span class="fu">round</span>(result1[[<span class="dv">2</span>]],<span class="dv">0</span>)))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">MQLE_samplesize</th>
+<th align="right">ASE_samplesize</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">228</td>
+<td align="right">139</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="part2-second" class="section level2">
+<h2>part2-second</h2>
+<p>The C++code:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>NumericMatrix <span class="fu">inverseMatrix</span>(NumericMatrix mat) {</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  int n <span class="ot">=</span> <span class="fu">mat.nrow</span>();</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  NumericMatrix <span class="fu">identity</span>(n, n);</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="cf">for</span> (int <span class="at">i =</span> <span class="dv">0</span>; i <span class="sc">&lt;</span> n; i<span class="sc">++</span>) {</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>    <span class="fu">identity</span>(i, i) <span class="ot">=</span> <span class="dv">1</span>;</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>  }</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>  <span class="cf">for</span> (int <span class="at">i =</span> <span class="dv">0</span>; i <span class="sc">&lt;</span> n; i<span class="sc">++</span>) {</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>    double pivot <span class="ot">=</span> <span class="fu">mat</span>(i, i);</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>    <span class="cf">for</span> (int <span class="at">j =</span> <span class="dv">0</span>; j <span class="sc">&lt;</span> n; j<span class="sc">++</span>) {</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>      <span class="fu">mat</span>(i, j) <span class="sc">/</span><span class="er">=</span> pivot;</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>      <span class="fu">identity</span>(i, j) <span class="sc">/</span><span class="er">=</span> pivot;</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>    }</span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>    <span class="cf">for</span> (int <span class="at">k =</span> <span class="dv">0</span>; k <span class="sc">&lt;</span> n; k<span class="sc">++</span>) {</span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>      <span class="cf">if</span> (k <span class="sc">!=</span> i) {</span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>        double factor <span class="ot">=</span> <span class="fu">mat</span>(k, i);</span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>        </span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>        <span class="cf">for</span> (int <span class="at">j =</span> <span class="dv">0</span>; j <span class="sc">&lt;</span> n; j<span class="sc">++</span>) {</span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>          <span class="fu">mat</span>(k, j) <span class="sc">-</span><span class="er">=</span> factor <span class="sc">*</span> <span class="fu">mat</span>(i, j);</span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a>          <span class="fu">identity</span>(k, j) <span class="sc">-</span><span class="er">=</span> factor <span class="sc">*</span> <span class="fu">identity</span>(i, j);</span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a>        }</span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a>      }</span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a>    }</span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a>  }</span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a>  return identity;</span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a>}</span></code></pre></div>
+<p>The Rcode(solve()inR):</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>solv<span class="ot">&lt;-</span><span class="cf">function</span>(mat){</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(mat)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    identity <span class="ot">&lt;-</span> <span class="fu">diag</span>(n)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>      pivot <span class="ot">&lt;-</span> mat[i, i]</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>      mat[i, ] <span class="ot">&lt;-</span> mat[i, ] <span class="sc">/</span> pivot</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>      identity[i, ] <span class="ot">&lt;-</span> identity[i, ] <span class="sc">/</span> pivot</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>      <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>        <span class="cf">if</span> (k <span class="sc">!=</span> i) {</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>          factor <span class="ot">&lt;-</span> mat[k, i]</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>          mat[k, ] <span class="ot">&lt;-</span> mat[k, ] <span class="sc">-</span> factor <span class="sc">*</span> mat[i, ]</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>          identity[k, ] <span class="ot">&lt;-</span> identity[k, ] <span class="sc">-</span> factor <span class="sc">*</span> identity[i, ]</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>        }</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>      }</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>    }</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>    <span class="fu">return</span>(identity)</span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a>  }</span></code></pre></div>
+<p>The R code for benchmarking is:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">library</span>(SA23204162)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">library</span>(microbenchmark)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>l<span class="ot">&lt;-</span><span class="dv">10</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>A<span class="ot">=</span><span class="fu">diag</span>(l)</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>l) {</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>l) {</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>    <span class="cf">if</span>(i<span class="sc">==</span>j)</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>        A[i,j]<span class="ot">=</span><span class="fl">0.5</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>        A[i,j]<span class="ot">=</span><span class="fl">0.2</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>    }</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>}</span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a>tm2 <span class="ot">&lt;-</span> microbenchmark<span class="sc">::</span><span class="fu">microbenchmark</span>(</span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="at">rnR =</span> <span class="fu">solv</span>(A),</span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="at">rnC =</span> <span class="fu">inverseMatrix</span>(A)</span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a> )</span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">summary</span>(tm2)[,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">6</span>)])</span></code></pre></div>
+<pre><code>##   expr    lq median     uq
+## 1  rnR 241.9 243.85 246.35
+## 2  rnC  34.0  35.60  36.10</code></pre>
+<p>It can be seen from the results that the inverse of the matrix
+combined with Rcpp is much faster than the inverse of R directly, and in
+some large projects, the inverse of the matrix needs to be carried out
+many times, which will save a lot of time.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
